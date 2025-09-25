@@ -1,28 +1,23 @@
-package controller
+package service
 
 import (
 	"encoding/json"
 	"net/http"
 	"persons_service/internal/entity"
-	"persons_service/internal/interface/repository"
-	"persons_service/internal/usecase/person"
 	"strconv"
 )
 
 type PersonHandler struct {
-	usecase person.PersonUsecase
+	service *ValidationService
 }
 
-func NewPersonHandler(usecase person.PersonUsecase) *PersonHandler {
-	return &PersonHandler{usecase: usecase}
+func NewPersonHandler(service *ValidationService) *PersonHandler {
+	return &PersonHandler{service: service}
 }
 
 func (h *PersonHandler) SaveHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		//h.slog.Info(`SaveHandler started`)
-
 		if r.Method != http.MethodPost {
-			//h.slog.Error("Method not allowed: " + r.Method)
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 			return
 		}
@@ -32,12 +27,11 @@ func (h *PersonHandler) SaveHandler() http.HandlerFunc {
 
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
-			//h.slog.Error("Invalid ID: " + idStr)
 			http.Error(w, "Invalid ID", http.StatusBadRequest)
 			return
 		}
 
-		err = h.usecase.Save(&entity.Person{ID: id, Name: name})
+		err = h.service.Save(&entity.Person{ID: id, Name: name})
 		if err != nil {
 			h.handleError(w, err)
 			return
@@ -50,10 +44,7 @@ func (h *PersonHandler) SaveHandler() http.HandlerFunc {
 
 func (h *PersonHandler) GetHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		//h.slog.Info("GetHandler started")
-
 		if r.Method != http.MethodGet {
-			//h.slog.Error("Method not allowed: " + r.Method)
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 			return
 		}
@@ -61,12 +52,11 @@ func (h *PersonHandler) GetHandler() http.HandlerFunc {
 		idStr := r.URL.Query().Get("ID")
 		id, err := strconv.Atoi(idStr)
 		if err != nil {
-			//h.slog.Error("Invalid ID: " + idStr)
 			http.Error(w, "Invalid ID", http.StatusBadRequest)
 			return
 		}
 
-		person, err := h.usecase.Get(id)
+		person, err := h.service.Get(id)
 		if err != nil {
 			h.handleError(w, err)
 			return
@@ -78,17 +68,17 @@ func (h *PersonHandler) GetHandler() http.HandlerFunc {
 
 func (h *PersonHandler) handleError(w http.ResponseWriter, err error) {
 	switch err {
-	case person.ErrInvalidID:
+	case ErrInvalidID:
 		http.Error(w, "Invalid ID", http.StatusBadRequest)
-	case person.ErrEmptyName:
+	case ErrEmptyName:
 		http.Error(w, "Empty name", http.StatusBadRequest)
-	case person.ErrInvalidName:
+	case ErrInvalidName:
 		http.Error(w, "Invalid name characters", http.StatusBadRequest)
-	case person.ErrDuplicateID:
+	case ErrDuplicateID:
 		http.Error(w, "Duplicate ID", http.StatusBadRequest)
-	case person.ErrDuplicateName:
+	case ErrDuplicateName:
 		http.Error(w, "Duplicate name", http.StatusBadRequest)
-	case repository.ErrNotFound:
+	case ErrNotFound:
 		http.Error(w, "Not found", http.StatusBadRequest)
 	default:
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

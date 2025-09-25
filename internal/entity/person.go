@@ -1,6 +1,6 @@
 package entity
 
-// Person бизнес-сущность
+// бизнес-сущность
 type Person struct {
 	ID   int
 	Name string

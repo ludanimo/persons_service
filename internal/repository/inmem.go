@@ -1,8 +1,8 @@
 package repository
 
 import (
-	"errors"
 	"persons_service/internal/entity"
+	"persons_service/internal/service"
 	"sync"
 )
 
@@ -11,7 +11,7 @@ type inMemoryRepo struct {
 	names map[int]string
 }
 
-func NewInMemoryRepository() PersonRepo {
+func NewInMemoryRepository() service.PersonRepo {
 	return &inMemoryRepo{
 		names: make(map[int]string),
 	}
@@ -29,7 +29,7 @@ func (r *inMemoryRepo) Get(id int) (*entity.Person, error) {
 	defer r.mu.RUnlock()
 	name, exists := r.names[id]
 	if !exists {
-		return nil, ErrNotFound
+		return nil, service.ErrNotFound
 	}
 	return &entity.Person{ID: id, Name: name}, nil
 }
@@ -61,5 +61,3 @@ func (r *inMemoryRepo) GetAllNames() ([]string, error) {
 	}
 	return names, nil
 }
-
-var ErrNotFound = errors.New("name not found")

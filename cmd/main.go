@@ -3,24 +3,22 @@ package main
 import (
 	"log/slog"
 	"net/http"
-	"persons_service/internal/interface/controller"
-	"persons_service/internal/interface/repository"
-	"persons_service/internal/usecase/person"
+	"persons_service/internal/repository"
+	"persons_service/internal/service"
 )
 
 func main() {
-
 	slog.Info("Starting application...")
 
 	// Инициализация репозитория
 	repo := repository.NewInMemoryRepository()
 	slog.Info("Initializing repository...")
 
-	// Инициализация usecase
-	usecase := person.NewPersonUsecase(repo)
+	// Инициализация валидации
+	validationService := service.NewValidationService(repo)
 
-	// Инициализация контроллера
-	handler := controller.NewPersonHandler(usecase)
+	// Инициализация обработчика
+	handler := service.NewPersonHandler(validationService)
 
 	// Регистрация обработчиков
 	http.HandleFunc("/save", handler.SaveHandler())
