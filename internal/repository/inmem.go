@@ -11,13 +11,13 @@ type inMemoryRepo struct {
 	names map[int]string
 }
 
-func NewInMemoryRepository() service.PersonRepo {
+func NewInMemoryRepository() entity.PersonRepo {
 	return &inMemoryRepo{
 		names: make(map[int]string),
 	}
 }
 
-func (r *inMemoryRepo) Save(person *entity.Person) error {
+func (r *inMemoryRepo) Create(person *entity.Person) error {
 	r.mu.Lock()
 	defer r.mu.Unlock()
 	r.names[person.ID] = person.Name

@@ -6,21 +6,12 @@ import (
 	"unicode"
 )
 
-//  интерфейс хранилища
-type PersonRepo interface {
-	Save(person *entity.Person) error
-	Get(id int) (*entity.Person, error)
-	ExistsById(id int) (bool, error)
-	ExistsByName(name string) (bool, error)
-	GetAllNames() ([]string, error)
-}
-
 // валидация
 type ValidationService struct {
-	repo PersonRepo
+	repo entity.PersonRepo
 }
 
-func NewValidationService(repo PersonRepo) *ValidationService {
+func NewValidationService(repo entity.PersonRepo) *ValidationService {
 	return &ValidationService{repo: repo}
 }
 
@@ -52,7 +43,7 @@ func (s *ValidationService) Save(person *entity.Person) error {
 		return ErrDuplicateName
 	}
 
-	return s.repo.Save(&entity.Person{
+	return s.repo.Create(&entity.Person{
 		ID:   person.ID,
 		Name: formattedName,
 	})

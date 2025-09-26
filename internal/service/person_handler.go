@@ -15,7 +15,7 @@ func NewPersonHandler(service *ValidationService) *PersonHandler {
 	return &PersonHandler{service: service}
 }
 
-func (h *PersonHandler) SaveHandler() http.HandlerFunc {
+func (h *PersonHandler) CreateHandler() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodPost {
 			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

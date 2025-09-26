@@ -21,8 +21,8 @@ func main() {
 	handler := service.NewPersonHandler(validationService)
 
 	// Регистрация обработчиков
-	http.HandleFunc("/save", handler.SaveHandler())
-	http.HandleFunc("/getPerson", handler.GetHandler())
+	http.HandleFunc("/person", handler.CreateHandler())
+	http.HandleFunc("/id", handler.GetHandler())
 
 	// Запуск сервера
 	slog.Info("Server starting on :8080...")
