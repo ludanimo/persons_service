@@ -8,10 +8,10 @@ import (
 )
 
 type PersonHandler struct {
-	service *ValidationService
+	service *entity.PersonService
 }
 
-func NewPersonHandler(service *ValidationService) *PersonHandler {
+func NewPersonHandler(service *entity.PersonService) *PersonHandler {
 	return &PersonHandler{service: service}
 }
 
@@ -68,17 +68,17 @@ func (h *PersonHandler) GetHandler() http.HandlerFunc {
 
 func (h *PersonHandler) handleError(w http.ResponseWriter, err error) {
 	switch err {
-	case ErrInvalidID:
+	case entity.ErrInvalidID:
 		http.Error(w, "Invalid ID", http.StatusBadRequest)
-	case ErrEmptyName:
+	case entity.ErrEmptyName:
 		http.Error(w, "Empty name", http.StatusBadRequest)
-	case ErrInvalidName:
+	case entity.ErrInvalidName:
 		http.Error(w, "Invalid name characters", http.StatusBadRequest)
-	case ErrDuplicateID:
+	case entity.ErrDuplicateID:
 		http.Error(w, "Duplicate ID", http.StatusBadRequest)
-	case ErrDuplicateName:
+	case entity.ErrDuplicateName:
 		http.Error(w, "Duplicate name", http.StatusBadRequest)
-	case ErrNotFound:
+	case entity.ErrNotFound:
 		http.Error(w, "Not found", http.StatusBadRequest)
 	default:
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

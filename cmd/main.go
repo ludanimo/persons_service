@@ -3,6 +3,7 @@ package main
 import (
 	"log/slog"
 	"net/http"
+	"persons_service/internal/entity"
 	"persons_service/internal/repository"
 	"persons_service/internal/service"
 )
@@ -14,8 +15,8 @@ func main() {
 	repo := repository.NewInMemoryRepository()
 	slog.Info("Initializing repository...")
 
-	// Инициализация валидации
-	validationService := service.NewValidationService(repo)
+	// Инициализация бизнес сценариев
+	validationService := entity.NewPersonService(repo)
 
 	// Инициализация обработчика
 	handler := service.NewPersonHandler(validationService)

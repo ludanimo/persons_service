@@ -2,7 +2,6 @@ package repository
 
 import (
 	"persons_service/internal/entity"
-	"persons_service/internal/service"
 	"sync"
 )
 
@@ -29,7 +28,7 @@ func (r *inMemoryRepo) Get(id int) (*entity.Person, error) {
 	defer r.mu.RUnlock()
 	name, exists := r.names[id]
 	if !exists {
-		return nil, service.ErrNotFound
+		return nil, entity.ErrNotFound
 	}
 	return &entity.Person{ID: id, Name: name}, nil
 }
